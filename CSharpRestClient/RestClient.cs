@@ -18,11 +18,11 @@ namespace CSharpRestClient
 
     public enum authenticationType
     {
-        Baic,
+        Basic,
         NTLM
     }
 
-    public enum AuthenticationTechnique
+    public enum authenticationTechnique
     {
         RollYourOwn,
         NetworkCredential
@@ -33,7 +33,7 @@ namespace CSharpRestClient
         public string endPoint { get; set; }
         public httpVerb httpMethod { get; set; }
         public authenticationType authType { get; set; }
-        public AuthenticationTechnique authTech { get; set; }
+        public authenticationTechnique authTech { get; set; }
         public string userName { get; set; }
         public string userPassword { get; set; }
 
@@ -51,8 +51,19 @@ namespace CSharpRestClient
 
             request.Method = httpMethod.ToString();
 
-            string authHeader = System.Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(userName + ":" + userPassword));
-            request.Headers.Add("Authorization", authType.ToString() + " " + authHeader);
+            if(authTech == authenticationTechnique.RollYourOwn)
+            {
+                //authtype always basic for now
+                string authHeader = System.Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(userName + ":" + userPassword));
+                request.Headers.Add("Authorization", "Basic" + " " + authHeader);
+            }
+            else
+            {
+                NetworkCredential netCred = new NetworkCredential(userName, userPassword);
+                request.Credentials = netCred;
+            }
+
+            
 
             HttpWebResponse response = null;
 

@@ -30,6 +30,22 @@ namespace CSharpRestClient
             RestClient restClient = new RestClient();
             restClient.endPoint = restURI.Text;
 
+            if ((bool)rollOwn.IsChecked)
+            {
+                restClient.authTech = authenticationTechnique.RollYourOwn;
+                debugOutput("AuthTechnique: Roll Your Own");
+                debugOutput("AuthType: Basic");
+            }
+            else
+            {
+                restClient.authTech = authenticationTechnique.NetworkCredential;
+                debugOutput("AuthTechnique: NetworkCredential");
+                debugOutput("AuthType: ??? - NetCred decides");
+            }
+
+            restClient.userName = userName.Text;
+            restClient.userPassword = password.Password;
+
             debugOutput("Rest Client Created");
 
             string strResponse = string.Empty;
